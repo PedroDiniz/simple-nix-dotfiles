@@ -1,7 +1,8 @@
-{pkgs, ...}: let
+{pkgs, lib, ...}: let
   xterm = pkgs.writeShellScriptBin "xterm" ''
     ${pkgs.blackbox-terminal}/bin/blackbox "$@"
   '';
+  hasDbus = (builtins.getEnv "DBUS_SESSION_BUS_ADDRESS" != "") || (builtins.getEnv "XDG_CURRENT_DESKTOP" != "");
 in {
   home = {
     packages = with pkgs; [
@@ -44,15 +45,17 @@ in {
     ];
   };
 
-  dconf.settings."com/raggesilver/BlackBox" = {
-    command-as-login-shell = true;
-    custom-shell-command = "${pkgs.tmux}/bin/tmux";
-    use-custom-command = true;
-    font = "CaskaydiaCove Nerd Font 12";
-    fill-tabs = true;
-    show-headerbar = false;
-    pretty = true;
-    theme-light = "Adwaita";
-    theme-dark = "Charmful";
+  dconf.settings = lib.mkIf hasDbus {
+    "com/raggesilver/BlackBox" = {
+      command-as-login-shell = true;
+      custom-shell-command = "${pkgs.tmux}/bin/tmux";
+      use-custom-command = true;
+      font = "CaskaydiaCove Nerd Font 12";
+      fill-tabs = true;
+      show-headerbar = false;
+      pretty = true;
+      theme-light = "Adwaita";
+      theme-dark = "Charmful";
+    };
   };
 }

@@ -1,4 +1,4 @@
-{config, ...}: {
+{config, lib, ...}: {
   imports = [
     ./config/nvim.nix
     ./config/blackbox.nix
@@ -31,9 +31,67 @@
 
     sessionPath = [
       "$HOME/.local/bin"
+      "$HOME/.nix-profile/bin"
     ];
   };
 
   programs.home-manager.enable = true;
-  home.stateVersion = "21.11";
+  home.stateVersion = "24.11";
+
+  # Ensure better environment handling on non-NixOS (SteamOS)
+  targets.genericLinux.enable = true;
+
+  # Help Plasma/KDE sessions pick up Nix environment without relying on shell login
+  home.file.".config/plasma-workspace/env/99-nix.sh".text = ''
+    #!/usr/bin/env sh
+    # Source Nix profile for user
+    if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+      . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+    fi
+    # Ensure Nix paths are present
+    export PATH="$HOME/.nix-profile/bin:$PATH"
+    export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/share}"
+  '';
+
+  # Refresh desktop database after package installation so KDE/SteamOS indexes .desktop files
+  home.activation.refreshDesktopDB = lib.hm.dag.entryAfter ["installPackages"] ''
+    if command -v xdg-desktop-menu >/dev/null 2>&1; then
+      xdg-desktop-menu forceupdate || true
+    fi
+    if command -v update-desktop-database >/dev/null 2>&1; then
+      update-desktop-database "$HOME/.nix-profile/share/applications" || true
+    fi
+  '';
+
+  # Symlink Nix-provided .desktop files into ~/.local/share/applications so KDE/SteamOS discovers them
+  home.activation.linkDesktopFiles = lib.hm.dag.entryAfter ["installPackages"] ''
+    mkdir -p "$HOME/.local/share/applications"
+    for f in "$HOME/.nix-profile/share/applications"/*.desktop; do
+      [ -f "$f" ] || continue
+      ln -sf "$f" "$HOME/.local/share/applications/$(basename "$f")"
+    done
+    if command -v update-desktop-database >/dev/null 2>&1; then
+      update-desktop-database "$HOME/.local/share/applications" || true
+    fi
+  '';
+
+  # Link Nerd Fonts into local fonts dir and refresh fontconfig cache
+  home.activation.linkFonts = lib.hm.dag.entryAfter ["installPackages"] ''
+    mkdir -p "$HOME/.local/share/fonts"
+    FONT_ROOT="$HOME/.nix-profile/share/fonts"
+    if [ -d "$FONT_ROOT" ]; then
+      find "$FONT_ROOT" -type f \( -iname '*Caskaydia*' -o -iname '*Cascadia*' \) -print | while read -r f; do
+        ln -sf "$f" "$HOME/.local/share/fonts/$(basename "$f")"
+      done
+    fi
+    # Fallback: search wider if not found
+    if [ "$(find "$HOME/.local/share/fonts" -maxdepth 1 -iname '*Caskaydia*' -o -iname '*Cascadia*' | wc -l)" -eq 0 ]; then
+      find "$HOME/.nix-profile" -type f \( -iname '*Caskaydia*' -o -iname '*Cascadia*' \) -print | while read -r f; do
+        ln -sf "$f" "$HOME/.local/share/fonts/$(basename "$f")"
+      done
+    fi
+    if command -v fc-cache >/dev/null 2>&1; then
+      fc-cache -f "$HOME/.local/share/fonts" || true
+    fi
+  '';
 }

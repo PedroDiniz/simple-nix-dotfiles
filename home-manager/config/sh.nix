@@ -24,16 +24,12 @@
     "gr" = "git reset --soft HEAD~1";
     "del" = "gio trash";
 
-    "cfg" = "code /home/kaldr/GitHub/dotfiles";
+    "cfg" = "code /home/deck/pedro/dev/dotfiles-main";
 
-    "nxcg" = "sudo nix-collect-garbage";
-    "nxst" = "sudo nixos-rebuild switch --flake github:PedroDiniz/dotfiles --impure";
-    "nxbt" = "sudo nixos-rebuild boot --flake github:PedroDiniz/dotfiles --impure";
-    "nxst-desk" = "sudo nixos-rebuild switch --flake github:PedroDiniz/dotfiles/desktop --impure";
-    "nxbt-desk" = "sudo nixos-rebuild boot --flake github:PedroDiniz/dotfiles/desktop --impure";
-    "nxst-lptp" = "sudo nixos-rebuild switch --flake github:PedroDiniz/dotfiles/laptop --impure";
-    "nxbt-lptp" = "sudo nixos-rebuild boot --flake github:PedroDiniz/dotfiles/laptop --impure";
-    "pjts" = "cd /home/kaldr/GitHub";
+    "nxcg" = "nix-collect-garbage --delete-old";
+    "hms" = "home-manager switch --flake /home/deck/pedro/dev/dotfiles-main#deck";
+    "hmr" = "nix run nixpkgs#home-manager -- switch --flake /home/deck/pedro/dev/dotfiles-main#deck";
+    "pjts" = "cd /home/deck";
     "forky" = "clear;neofetch";
   };
 in {

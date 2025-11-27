@@ -8,7 +8,6 @@
   deps = with pkgs;
   with nodePackages_latest; [
     # js, html
-    vscode-html-languageserver-bin
     vscode-langservers-extracted
     tailwindcss-language-server
     typescript-language-server
@@ -23,11 +22,6 @@
     taplo # toml
     yaml-language-server
 
-    # python
-    ruff
-    ruff-lsp
-    pyright
-
     # bash
     shfmt
     bash-language-server
@@ -36,7 +30,7 @@
   ];
 in {
   xdg = {
-    configFile.nvim.source = ../nvim;
+    configFile.nvim.source = ../../nvim;
     desktopEntries."nvim" = ifLinux {
       name = "NeoVim";
       comment = "Edit text files";
