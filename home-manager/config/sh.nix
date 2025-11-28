@@ -25,6 +25,7 @@
     "del" = "gio trash";
 
     "cfg" = "code /home/deck/pedro/dev/dotfiles-main";
+    # Removidos aliases codegl/wezgl para simplificação; usar diretamente 'code' e 'wezterm'.
 
     "nxcg" = "nix-collect-garbage --delete-old";
     "hms" = "home-manager switch --flake /home/deck/pedro/dev/dotfiles-main#deck";

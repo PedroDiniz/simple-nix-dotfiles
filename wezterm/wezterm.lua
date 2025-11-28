@@ -9,6 +9,8 @@ fi
 
 return {
     enable_wayland = false,
+    -- Force WebGPU frontend to avoid EGL/GLX libEGL.so issues on AMD APU (Z1 Extreme)
+    front_end = "WebGpu",
     color_schemes = {
         ["Gnome Light"] = require("gnome"),
         ["Charmful Dark"] = require("charmful"),

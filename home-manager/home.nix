@@ -1,4 +1,7 @@
-{config, lib, ...}: {
+{ pkgs, config, lib, ... }: {
+  # Sistema alvo: Lenovo Legion Go (AMD Ryzen Z1 Extreme APU - GPU integrada RDNA3).
+  # Decisão: evitar hacks EGL/GLX redundantes; usar pacote vscode-fhs e nixGLMesa (quando disponível) para apps que exigem renderização.
+  # Manter configuração mínima e delegar arquivos específicos aos módulos em config/.
   imports = [
     ./config/nvim.nix
     ./config/blackbox.nix
@@ -21,12 +24,20 @@
     warn-dirty = false;
   };
 
+  xdg = {
+    enable = true;
+    # Removido configFile.wezterm duplicado (já definido em wezterm.nix)
+  };
+
   home = {
     sessionVariables = {
+      EDITOR = "nvim";
+      SHELL = "${pkgs.nushell}/bin/nu";
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
       GOPATH = "${config.home.homeDirectory}/.local/share/go";
       GOMODCACHE = "${config.home.homeDirectory}/.cache/go/pkg/mod";
+      # Minimal session vars; GPU handled via optional nixGL + LD_LIBRARY_PATH in launcher
     };
 
     sessionPath = [
@@ -99,14 +110,6 @@
     fi
   '';
 
-  # Ensure unversioned libEGL.so is available if only libEGL.so.1 exists
-  home.activation.linkEGL = lib.hm.dag.entryAfter ["installPackages"] ''
-    EGLDIR="$HOME/.nix-profile/lib"
-    if [ -d "$EGLDIR" ]; then
-      if [ -f "$EGLDIR/libEGL.so.1" ] && [ ! -f "$EGLDIR/libEGL.so" ]; then
-        ln -sf "$EGLDIR/libEGL.so.1" "$EGLDIR/libEGL.so"
-      fi
-    fi
-  '';
+  # Removidos: linkEGL, run-nixgl e desktop entries customizados; confiar nos .desktop padrão.
 
 }

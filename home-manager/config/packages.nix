@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, inputs, ... }: {
   imports = [
     ../scripts/blocks.nix
     ../scripts/nx-switch.nix
@@ -31,6 +31,7 @@
       mesa
       libglvnd
       vulkan-loader
+      mesa-demos
 
       fnm
 
@@ -58,7 +59,22 @@
       slides
       yabridge
       yabridgectl
+      # nixGL (opcional). Usa lib.optional para evitar inserir null.
+      # Será incluído somente se o atributo existir.
+      # (Se desejar remover completamente, apague esta linha.)
     ]
+    # Prefer nixGLMesa (AMD/mesa) se disponível; caso contrário usar nixGL genérico
+    ++ (lib.optional (
+      (inputs ? nixGL) &&
+      (builtins.hasAttr pkgs.system inputs.nixGL.packages) &&
+      (inputs.nixGL.packages.${pkgs.system} ? nixGLMesa)
+    ) inputs.nixGL.packages.${pkgs.system}.nixGLMesa)
+    ++ (lib.optional (
+      (inputs ? nixGL) &&
+      (builtins.hasAttr pkgs.system inputs.nixGL.packages) &&
+      !(inputs.nixGL.packages.${pkgs.system} ? nixGLMesa) &&
+      (inputs.nixGL.packages.${pkgs.system} ? nixGL)
+    ) inputs.nixGL.packages.${pkgs.system}.nixGL)
     ++ (lib.optional (lib.hasAttr "mesa" pkgs && lib.hasAttr "drivers" pkgs.mesa) pkgs.mesa.drivers)
     # conditionally include unfree/less-common packages when available in nixpkgs
     ++ (maybe "caprine-bin")
