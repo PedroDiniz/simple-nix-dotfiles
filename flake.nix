@@ -17,7 +17,7 @@
           owner = "wez";
           repo = "wezterm";
           rev = version;
-          sha256 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="; # placeholder
+          sha256 = "sha256-hhuzs89wWKc7n6HMKriWvV+pLhfLvO06XRWtmdCQ0rs="; # updated real src hash
         };
         cargoHash = "sha256-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB="; # placeholder; will be reported by Nix
         dontStrip = true;
