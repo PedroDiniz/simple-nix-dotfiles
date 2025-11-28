@@ -24,14 +24,18 @@
       libreoffice
       gimp
       dconf
-      xdg-utils
       desktop-file-utils
+    # langs / runtimes (managed via fnm only)
+    fnm
       insomnia
       dconf-editor
       thunderbird
+      # GL/OpenGL/EGL runtime libs to satisfy GUI apps (wezterm, vscode)
+      mesa
+      libglvnd
+      vulkan-loader
 
       # langs / runtimes
-      poetry
       fnm
 
       # tools
@@ -48,12 +52,7 @@
       mongodb-compass
       gh
       rclone
-      # graphics/runtime libs for GUI apps (wezterm EGL issue)
-      mesa
-      libglvnd
-      vulkan-loader
-      wayland
-      libxkbcommon
+      # font runtime for GUI apps
       fontconfig
       # nerd font (Cascadia Code) via nerdfonts package
       (pkgs.nerdfonts.override { fonts = [ "CascadiaCode" ]; })
@@ -64,6 +63,7 @@
       yabridge
       yabridgectl
     ]
+    ++ (lib.optional (lib.hasAttr "mesa" pkgs && lib.hasAttr "drivers" pkgs.mesa) pkgs.mesa.drivers)
     # conditionally include unfree/less-common packages when available in nixpkgs
     ++ (maybe "caprine-bin")
     ++ (maybe "github-desktop")
@@ -71,7 +71,6 @@
     ++ (maybe "google-chrome")
     ++ (maybe "transmission_4-gtk")
     ++ (maybe "icon-library")
-    ++ (maybe "r2modman")
     ++ (maybe "bottles")
     ++ (maybe "webcord-vencord")
     ++ (maybe "cider");

@@ -49,8 +49,12 @@
       . "$HOME/.nix-profile/etc/profile.d/nix.sh"
     fi
     # Ensure Nix paths are present
-    export PATH="$HOME/.nix-profile/bin:$PATH"
+    export PATH="$HOME/.local/bin:$HOME/.nix-profile/bin:$PATH"
     export XDG_DATA_DIRS="$HOME/.nix-profile/share:''${XDG_DATA_DIRS:-/usr/share}"
+    # Initialize fnm (use bash output which is POSIX-compatible)
+    if command -v fnm >/dev/null 2>&1; then
+      eval "$(fnm env --shell=bash --use-on-cd)"
+    fi
   '';
 
   # Refresh desktop database after package installation so KDE/SteamOS indexes .desktop files
@@ -94,4 +98,15 @@
       fc-cache -f "$HOME/.local/share/fonts" || true
     fi
   '';
+
+  # Ensure unversioned libEGL.so is available if only libEGL.so.1 exists
+  home.activation.linkEGL = lib.hm.dag.entryAfter ["installPackages"] ''
+    EGLDIR="$HOME/.nix-profile/lib"
+    if [ -d "$EGLDIR" ]; then
+      if [ -f "$EGLDIR/libEGL.so.1" ] && [ ! -f "$EGLDIR/libEGL.so" ]; then
+        ln -sf "$EGLDIR/libEGL.so.1" "$EGLDIR/libEGL.so"
+      fi
+    fi
+  '';
+
 }

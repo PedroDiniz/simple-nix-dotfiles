@@ -46,6 +46,10 @@ in {
         bindkey "^[[1;5C" forward-word
         bindkey "^[[1;5D" backward-word
         unsetopt BEEP
+        # fnm: use selected Node version and switch on cd
+        if command -v fnm >/dev/null 2>&1; then
+          eval "$(fnm env --use-on-cd)"
+        fi
       '';
     };
 
@@ -54,6 +58,10 @@ in {
       enable = true;
       initExtra = ''
         SHELL=${pkgs.bash}/bin/bash
+        # fnm: use selected Node version and switch on cd
+        if command -v fnm >/dev/null 2>&1; then
+          eval "$(fnm env --shell bash --use-on-cd)"
+        fi
       '';
     };
 
@@ -123,5 +131,7 @@ in {
         ${completions ["cargo" "git" "nix" "npm"]}
       '';
     };
+
+      # Home Manager may not have programs.fnm in this channel; we init via shell instead
   };
 }
