@@ -6,9 +6,9 @@ let
     export __EGL_VENDOR_LIBRARY_DIRS="/usr/share/glvnd/egl_vendor.d:${pkgs.libglvnd}/share/glvnd/egl_vendor.d:''${__EGL_VENDOR_LIBRARY_DIRS:-}"
     # Ensure the dynamic linker can find libEGL.so from Nix profile or host
     export LD_LIBRARY_PATH="$HOME/.nix-profile/lib:/usr/lib:''${LD_LIBRARY_PATH:-}"
-    # Force X11 backend as a safe default on SteamOS if Wayland segfaults
+    # Force X11 backend; use Software frontend to avoid GPU/driver crashes
     export WINIT_UNIX_BACKEND="x11"
-    export WEZTERM_FRONTEND="OpenGL"
+    export WEZTERM_FRONTEND="Software"
     exec "${pkgs.wezterm}/bin/wezterm" "$@"
   '';
   xterm = pkgs.writeShellScriptBin "xterm" ''${wezWrapped}/bin/wezterm "$@"'';
