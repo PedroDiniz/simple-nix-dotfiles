@@ -110,6 +110,4 @@
     fi
   '';
 
-  # Removidos: linkEGL, run-nixgl e desktop entries customizados; confiar nos .desktop padrão.
-
 }

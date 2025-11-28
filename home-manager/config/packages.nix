@@ -32,6 +32,7 @@
       libglvnd
       vulkan-loader
       mesa-demos
+      mesa-utils
 
       fnm
 
