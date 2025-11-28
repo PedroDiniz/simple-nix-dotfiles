@@ -1,12 +1,10 @@
 { pkgs, ... }:
 let
   wezWrapped = pkgs.writeShellScriptBin "wezterm" ''
-    # Prefer host GL/EGL drivers; avoid broad LD_LIBRARY_PATH to reduce conflicts
+    # Minimal SteamOS/KDE-friendly env: use host GL paths, force X11 + Software
     export LIBGL_DRIVERS_PATH="/usr/lib/dri:${pkgs.mesa.drivers}/lib/dri:''${LIBGL_DRIVERS_PATH:-}"
     export __EGL_VENDOR_LIBRARY_DIRS="/usr/share/glvnd/egl_vendor.d:${pkgs.libglvnd}/share/glvnd/egl_vendor.d:''${__EGL_VENDOR_LIBRARY_DIRS:-}"
-    # Ensure the dynamic linker can find libEGL.so from Nix profile or host
     export LD_LIBRARY_PATH="$HOME/.nix-profile/lib:/usr/lib:''${LD_LIBRARY_PATH:-}"
-    # Force X11 backend; use Software frontend to avoid GPU/driver crashes
     export WINIT_UNIX_BACKEND="x11"
     export WEZTERM_FRONTEND="Software"
     exec "${pkgs.wezterm}/bin/wezterm" "$@"
