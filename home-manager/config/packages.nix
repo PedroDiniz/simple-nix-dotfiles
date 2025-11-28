@@ -47,7 +47,6 @@
       mongodb-compass
       gh
       rclone
-      xterm
       xdg-utils
       # font runtime for GUI apps
       fontconfig
