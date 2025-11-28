@@ -29,12 +29,11 @@
       dconf-editor
       thunderbird
       mesa
+      mesa-demos
+      driversi686Linux.mesa
       libglvnd
       vulkan-loader
-      mesa-demos
-      mesa-gl-headers
-      libgbm
-      libdrm
+      vulkan-tools
       fnm
 
       bat
@@ -87,5 +86,9 @@
     ++ (maybe "icon-library")
     ++ (maybe "bottles")
     ++ (maybe "webcord-vencord")
-    ++ (maybe "cider");
+    ++ (maybe "cider")
+    ++ (maybe "libdrm")
+    ++ (maybe "libgbm")
+    ++ (maybe "mesa-gl-headers")
+    ++ (maybe "mesa-gl-headers");
 }
