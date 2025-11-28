@@ -32,8 +32,9 @@
       libglvnd
       vulkan-loader
       mesa-demos
-      mesa-utils
-
+      mesa-gl-headers
+      libgbm
+      libdrm
       fnm
 
       bat
