@@ -14,11 +14,4 @@ let
 in {
   home.packages = [ wezWrapped xterm kgx ];
   xdg.configFile.wezterm.source = ../../wezterm;
-  xdg.desktopEntries."org.wezfurlong.wezterm" = {
-    name = "WezTerm";
-    exec = "wezterm";
-    icon = "org.wezfurlong.wezterm";
-    terminal = false;
-    categories = [ "TerminalEmulator" ];
-  };
 }

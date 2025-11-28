@@ -25,20 +25,15 @@
       gimp
       dconf
       desktop-file-utils
-    # langs / runtimes (managed via fnm only)
-    fnm
       insomnia
       dconf-editor
       thunderbird
-      # GL/OpenGL/EGL runtime libs to satisfy GUI apps (wezterm, vscode)
       mesa
       libglvnd
       vulkan-loader
 
-      # langs / runtimes
       fnm
 
-      # tools
       bat
       eza
       fd
@@ -52,6 +47,8 @@
       mongodb-compass
       gh
       rclone
+      xterm
+      xdg-utils
       # font runtime for GUI apps
       fontconfig
       # nerd font (Cascadia Code) via nerdfonts package
