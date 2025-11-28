@@ -6,24 +6,7 @@
     home-manager,
     nixpkgs,
     ...
-  }: let
-    # Overlay: force wezterm to a known stable release tag instead of unstable build
-    # Overlay: attempt to use a stable tagged release of wezterm.
-    # NOTE: cargoHash/sha256 placeholders will need updating after first build error.
-    stableWeztermOverlay = (final: prev: {
-      wezterm = prev.wezterm.overrideAttrs (old: rec {
-        version = "20240203-110809-5046fc22";
-        src = prev.fetchFromGitHub {
-          owner = "wez";
-          repo = "wezterm";
-          rev = version;
-          sha256 = "sha256-hhuzs89wWKc7n6HMKriWvV+pLhfLvO06XRWtmdCQ0rs="; # updated real src hash
-        };
-        cargoHash = "sha256-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB="; # placeholder; will be reported by Nix
-        dontStrip = true;
-      });
-    });
-  in {
+  }: {
     # nixos hm config
     homeConfigurations = let
       username = "deck";
